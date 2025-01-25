@@ -50,5 +50,27 @@ export default function App() {
     }
   }
 
-  return <div></div>;
+  return (
+    <div>
+      {weatherData && (
+        <div>
+          <p>Location: {weatherData.name}</p>
+          Weather:
+          <ul>
+            {weatherData.weather.map((weatherCondition) => {
+              return (
+                <li key={`weatherCondition-${weatherCondition.id}`}>
+                  {weatherCondition.main}: {weatherCondition.description}
+                </li>
+              );
+            })}
+          </ul>
+          <p>Temperature: {weatherData.main.temp} &#176;C </p>
+          <p>Feels like: {weatherData.main.feels_like} &#176;C</p>
+          <p>Humidity: {weatherData.main.humidity}%</p>
+          <p>Wind: {Math.round(weatherData.wind.speed * 3.6)} km/h</p>
+        </div>
+      )}
+    </div>
+  );
 }
