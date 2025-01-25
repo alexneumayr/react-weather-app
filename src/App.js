@@ -52,6 +52,7 @@ export default function App() {
 
   return (
     <div>
+      {!location && <p>Please enable location services</p>}
       {weatherData && (
         <div>
           <p>Location: {weatherData.name}</p>
