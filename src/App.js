@@ -2,12 +2,12 @@ import './App.css';
 import 'react-widgets/styles.css';
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
-import styles from './index.css';
+// import styles from './index.css';
 import ShowWeather from './ShowWeather';
 
 export default function App() {
   const [locationName, setLocationName] = useState('');
-  const [locationPossibilities, setLocationPossibilities] = useState();
+  const [locationPossibilities, setLocationPossibilities] = useState([]);
 
   useEffect(() => {
     setLocationPossibilities([]);
@@ -67,7 +67,7 @@ export default function App() {
             />
             <button>Set Location</button>
           </form>
-          {locationPossibilities && (
+          {locationPossibilities.length > 0 && (
             <div>
               <ul>
                 {locationPossibilities.map((singleLocation) => {

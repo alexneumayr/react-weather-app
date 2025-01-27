@@ -8,8 +8,8 @@ export default function ShowWeather({
   const params = useParams();
   const lat = params.lat;
   const lon = params.lon;
-  const [location, setLocation] = useState();
-  const [weatherData, setWeatherData] = useState();
+  const [location, setLocation] = useState({});
+  const [weatherData, setWeatherData] = useState({});
 
   useEffect(() => {
     getLocation();
@@ -21,7 +21,7 @@ export default function ShowWeather({
   }, [setLocationPossibilities, setLocationName, lat, lon]);
 
   useEffect(() => {
-    if (location && !lat && !lon) {
+    if (Object.keys(location).length > 0 && !lat && !lon) {
       fetchWeatherData(location.latitude, location.longitude);
     } else if (lat && lon) {
       fetchWeatherData(lat, lon);
@@ -48,25 +48,20 @@ export default function ShowWeather({
   }
 
   function getLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
-        },
-        () => console.log('Unable to retrieve your location'),
-      );
-    } else {
-      console.log('Geolocation not supported');
-    }
+    navigator.geolocation.getCurrentPosition((position) => {
+      setLocation({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      });
+    });
   }
 
   return (
     <>
-      {!location && <p>Please enable location services</p>}
-      {weatherData && (
+      {Object.keys(location).length === 0 && (
+        <p>Please enable location services</p>
+      )}
+      {Object.keys(weatherData).length > 0 && (
         <div>
           <p>Location: {weatherData.name}</p>
           Weather:
