@@ -1,7 +1,9 @@
 import './App.css';
 import 'react-widgets/styles.css';
 import { useEffect, useState } from 'react';
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import styles from './index.css';
+import ShowWeather from './ShowWeather';
 
 export default function App() {
   const [location, setLocation] = useState();
@@ -89,48 +91,58 @@ export default function App() {
 
   return (
     <div>
-      {!location && <p>Please enable location services</p>}
-      {weatherData && (
-        <div>
-          <p>Location: {weatherData.name}</p>
-          Weather:
-          <ul>
-            {weatherData.weather.map((weatherCondition) => {
-              return (
-                <li key={`weatherCondition-${weatherCondition.id}`}>
-                  {weatherCondition.main}: {weatherCondition.description}
-                </li>
-              );
-            })}
-          </ul>
-          <p>Temperature: {weatherData.main.temp} &#176;C </p>
-          <p>Feels like: {weatherData.main.feels_like} &#176;C</p>
-          <p>Humidity: {weatherData.main.humidity}%</p>
-          <p>Wind: {Math.round(weatherData.wind.speed * 3.6)} km/h</p>
-        </div>
-      )}
-      <div style={{ width: '300px' }}>
-        <form onSubmit={HandleFormSubmit}>
-          <label htmlFor="location-name">Location: </label>
-          <input
-            id="location-name"
-            value={locationName}
-            onChange={(event) => setLocationName(event.currentTarget.value)}
-          />
-          <button>Set Location</button>
-        </form>
-        {locationPossibilities && (
+      <BrowserRouter>
+        <Routes>
+          <Route path="/:lat/:lon" element={<ShowWeather />} />
+        </Routes>
+        {!location && <p>Please enable location services</p>}
+        {weatherData && (
           <div>
+            <p>Location: {weatherData.name}</p>
+            Weather:
             <ul>
-              {locationPossibilities.map((singleLocation) => {
+              {weatherData.weather.map((weatherCondition) => {
                 return (
-                  <li>{`${singleLocation.name}, ${singleLocation.state}, ${singleLocation.country}`}</li>
+                  <li key={`weatherCondition-${weatherCondition.id}`}>
+                    {weatherCondition.main}: {weatherCondition.description}
+                  </li>
                 );
               })}
             </ul>
+            <p>Temperature: {weatherData.main.temp} &#176;C </p>
+            <p>Feels like: {weatherData.main.feels_like} &#176;C</p>
+            <p>Humidity: {weatherData.main.humidity}%</p>
+            <p>Wind: {Math.round(weatherData.wind.speed * 3.6)} km/h</p>
           </div>
         )}
-      </div>
+        <div style={{ width: '300px' }}>
+          <form onSubmit={HandleFormSubmit}>
+            <label htmlFor="location-name">Location: </label>
+            <input
+              id="location-name"
+              value={locationName}
+              onChange={(event) => setLocationName(event.currentTarget.value)}
+            />
+            <button>Set Location</button>
+          </form>
+          {locationPossibilities && (
+            <div>
+              <ul>
+                {locationPossibilities.map((singleLocation) => {
+                  return (
+                    <li key={`location-${singleLocation.lat}`}>
+                      <Link
+                        to={`/${singleLocation.lat}/${singleLocation.lon}`}
+                        element={ShowWeather}
+                      >{`${singleLocation.name}${singleLocation.state ? `, ${singleLocation.state}` : ''}, ${singleLocation.country}`}</Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+        </div>
+      </BrowserRouter>
     </div>
   );
 }
