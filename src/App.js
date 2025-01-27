@@ -1,13 +1,30 @@
 import './App.css';
+import 'react-widgets/styles.css';
 import { useEffect, useState } from 'react';
+import styles from './index.css';
 
 export default function App() {
   const [location, setLocation] = useState();
   const [weatherData, setWeatherData] = useState();
+  const [locationList, setLocationList] = useState([]);
+  const [cityNames, setCityNames] = useState([]);
+  const [locationName, setLocationName] = useState('');
+  const [locationPossibilities, setLocationPossibilities] = useState();
 
   useEffect(() => {
     getLocation();
   }, []);
+
+  useEffect(() => {
+    console.log(locationList);
+    if (locationList) {
+      setCityNames(
+        locationList.map((item) => {
+          return `${item.name}${item.state ? item.state : ''}, ${item.country}`;
+        }),
+      );
+    }
+  }, [locationList]);
 
   useEffect(() => {
     if (location) {
@@ -50,6 +67,26 @@ export default function App() {
     }
   }
 
+  function HandleFormSubmit(event) {
+    event.preventDefault();
+    fetch(
+      `http://api.openweathermap.org/geo/1.0/direct?q=${locationName}&limit=5&appid=d5c82b722cdf859ce5348827559f2d4f`,
+    )
+      .then(
+        (response) => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error('Request failed!');
+        },
+        (networkError) => console.log(networkError.message),
+      )
+      .then((jsonResponse) => {
+        setLocationPossibilities(jsonResponse);
+      })
+      .catch((error) => console.log(error));
+  }
+
   return (
     <div>
       {!location && <p>Please enable location services</p>}
@@ -72,6 +109,28 @@ export default function App() {
           <p>Wind: {Math.round(weatherData.wind.speed * 3.6)} km/h</p>
         </div>
       )}
+      <div style={{ width: '300px' }}>
+        <form onSubmit={HandleFormSubmit}>
+          <label htmlFor="location-name">Location: </label>
+          <input
+            id="location-name"
+            value={locationName}
+            onChange={(event) => setLocationName(event.currentTarget.value)}
+          />
+          <button>Set Location</button>
+        </form>
+        {locationPossibilities && (
+          <div>
+            <ul>
+              {locationPossibilities.map((singleLocation) => {
+                return (
+                  <li>{`${singleLocation.name}, ${singleLocation.state}, ${singleLocation.country}`}</li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
