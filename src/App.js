@@ -1,19 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import ShowWeather from './ShowWeather';
 
 export default function App() {
-  const [locationName, setLocationName] = useState('');
-  const [locationPossibilities, setLocationPossibilities] = useState([]);
+  const [locationName, setLocationName] = useState(''); // State of the "Location" input field
+  const [locationPossibilities, setLocationPossibilities] = useState([]); // State of the return of the Geocoding API
 
-  useEffect(() => {
-    setLocationPossibilities([]);
-  }, []);
-
+  // Function to request possible location after user clicks "Set Location" button
   function HandleFormSubmit(event) {
     event.preventDefault();
+    /* Send request with the location which the user has specified to the OpenWeather Geocoding API. The "limit" parameter is set to 5 which is the maximum amount of possible locations the API can deliver (this parameter has to be there as otherwise the API would only return a single location) */
     fetch(
-      `http://api.openweathermap.org/geo/1.0/direct?q=${locationName}&limit=5&appid=d5c82b722cdf859ce5348827559f2d4f`,
+      `http://api.openweathermap.org/geo/1.0/direct?q=${locationName}&limit=20&appid=d5c82b722cdf859ce5348827559f2d4f`,
     )
       .then(
         (response) => {
@@ -25,6 +23,7 @@ export default function App() {
         (networkError) => console.log(networkError.message),
       )
       .then((jsonResponse) => {
+        // If the request was successful save the response to the locationPossibilities state
         setLocationPossibilities(jsonResponse);
       })
       .catch((error) => console.log(error));
@@ -32,8 +31,11 @@ export default function App() {
 
   return (
     <div>
+      {/* Using ReactRouter to allow the user to just click on the link of a location.
+      The coordinates are then put in the URL to be used with useParams in the ShowWeather component. */}
       <BrowserRouter>
         <Routes>
+          {/* Show ShowWeather when the path is "/" */}
           <Route
             path="/"
             element={
@@ -43,6 +45,7 @@ export default function App() {
               />
             }
           />
+          {/* Show ShowWeather when the path contains the coordinates and specify the parameter names */}
           <Route
             path="/:lat/:lon"
             element={
@@ -55,6 +58,7 @@ export default function App() {
         </Routes>
 
         <div style={{ width: '300px' }}>
+          {/* Show simple form with input field and "Location" button */}
           <form onSubmit={HandleFormSubmit}>
             <label htmlFor="location-name">Location: </label>
             <input
@@ -64,6 +68,7 @@ export default function App() {
             />
             <button>Set Location</button>
           </form>
+          {/* When the locations are received from the Geocoding API show the locations as links in a list */}
           {locationPossibilities.length > 0 && (
             <div>
               <ul>
