@@ -1,8 +1,5 @@
-import './App.css';
-import 'react-widgets/styles.css';
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
-// import styles from './index.css';
 import ShowWeather from './ShowWeather';
 
 export default function App() {

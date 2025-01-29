@@ -1,3 +1,4 @@
+import './App.js';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -57,7 +58,7 @@ export default function ShowWeather({
   }
 
   return (
-    <>
+    <div className="App">
       {Object.keys(location).length === 0 && (
         <p>Please enable location services</p>
       )}
@@ -80,6 +81,6 @@ export default function ShowWeather({
           <p>Wind: {Math.round(weatherData.wind.speed * 3.6)} km/h</p>
         </div>
       )}
-    </>
+    </div>
   );
 }
