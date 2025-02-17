@@ -11,7 +11,7 @@ export default function App() {
     event.preventDefault();
     /* Send request with the location which the user has specified to the OpenWeather Geocoding API. The "limit" parameter is set to 5 which is the maximum amount of possible locations the API can deliver (this parameter has to be there as otherwise the API would only return a single location) */
     fetch(
-      `http://api.openweathermap.org/geo/1.0/direct?q=${locationName}&limit=20&appid=d5c82b722cdf859ce5348827559f2d4f`,
+      `https://api.openweathermap.org/geo/1.0/direct?q=${locationName}&limit=20&appid=d5c82b722cdf859ce5348827559f2d4f`,
     )
       .then(
         (response) => {
