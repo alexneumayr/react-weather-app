@@ -7,7 +7,7 @@ export default function App() {
   const [locationPossibilities, setLocationPossibilities] = useState([]); // State of the return of the Geocoding API
 
   // Function to request possible location after user clicks "Set Location" button
-  function HandleFormSubmit(event) {
+  function handleFormSubmit(event) {
     event.preventDefault();
     /* Send request with the location which the user has specified to the OpenWeather Geocoding API. The "limit" parameter is set to 5 which is the maximum amount of possible locations the API can deliver (this parameter has to be there as otherwise the API would only return a single location) */
     fetch(
@@ -59,7 +59,7 @@ export default function App() {
 
         <div style={{ width: '300px' }}>
           {/* Show simple form with input field and "Location" button */}
-          <form onSubmit={HandleFormSubmit}>
+          <form onSubmit={handleFormSubmit}>
             <label htmlFor="location-name">Location: </label>
             <input
               id="location-name"
